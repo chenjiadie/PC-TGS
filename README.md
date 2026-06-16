@@ -4,6 +4,7 @@ Ye Xue, Yiheng Wang, Xinhua Shao, Qi Yan, Shutao Zhang, Tsung-Hui Chang
 
 [![Paper](https://img.shields.io/badge/Paper-IEEE-blue)](https://doi.org/10.1109/TWC.2026.3696997)
 [![Code](https://img.shields.io/badge/Code-GitHub-green)](https://github.com/yeehengwang/HUAWEI-RF-3DGS-Project)
+[![Project Page](https://img.shields.io/badge/Project-Page-blue)](https://chenjiadie.github.io/PC-TGS/)
 
 ![PC-TGS Framework](flow_00.png)
 
