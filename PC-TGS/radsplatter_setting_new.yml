@@ -1,0 +1,56 @@
+
+### Path settings
+path:
+  expname: radsplatter_shanghai_exp_new
+  logdir: ./radsplatter_code/log
+
+
+### training settings
+train:
+  lr: 5e-4
+  weight_decay: 5e-6
+  T_max: 10000
+  eta_min: 1e-6
+  batch_size: 32
+  # batch_size: 128
+  total_iterations: 199000
+  load_ckpt: False
+
+  save_freq: 10000
+  val_freq: 2500
+  report_freq: 100
+
+### training settings
+newtrain:
+  # position_lr_init: 0.00016
+  position_lr_init: 0.005
+  position_lr_final: 0.00005
+  position_lr_delay_mult: 0.01
+  position_lr_max_steps: 30000
+  feature_lr: 0.0025
+  opacity_lr: 0.05
+  scaling_lr: 0.005
+  rotation_lr: 0.001
+  T_lr: 0.01
+  phi_o_lr: 0.001
+  bias_lr: 0.000001
+  gamma_lr: 0.001
+  linear1_lr: 0.001
+
+  # position_lr_init: 0.05
+  # position_lr_final: 0.0000005
+  # position_lr_delay_mult: 0.0001
+  # position_lr_max_steps: 30000
+  # feature_lr: 0.0025
+  # opacity_lr: 0.05
+  # scaling_lr: 0.05
+  # rotation_lr: 0.001
+  # T_lr: 0.001
+  # phi_o_lr: 0.0001
+  # bias_lr: 0.01
+  # gamma_lr: 0.01
+  # linear1_lr: 0.01
+
+
+
+
