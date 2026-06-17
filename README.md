@@ -1,6 +1,6 @@
 # PC-TGS: Point-Cloud-Assistant Localized Statistical Channel Prediction by Tangent Gaussian Splatting
 
-Ye Xue, Yiheng Wang, Xinhua Shao, Qi Yan, Shutao Zhang, Tsung-Hui Chang
+[Ye Xue](https://yokoxue.github.io/), [Yiheng Wang](https://yeehengwang.github.io/), Xinhua Shao, Qi Yan, Shutao Zhang, [Tsung-Hui Chang](https://myweb.cuhk.edu.cn/changtsunghui/Home)
 
 [![Paper](https://img.shields.io/badge/Paper-IEEE-blue)](https://doi.org/10.1109/TWC.2026.3696997)
 [![Code](https://img.shields.io/badge/Code-GitHub-green)](https://github.com/yeehengwang/HUAWEI-RF-3DGS-Project)
