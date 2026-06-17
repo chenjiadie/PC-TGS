@@ -20,59 +20,48 @@
   <link rel="icon" type="image/x-icon" href="static/images/favicon.ico">
   <link href="https://fonts.googleapis.com/css?family=Google+Sans|Noto+Sans|Castoro" rel="stylesheet">
   <link rel="stylesheet" href="static/css/bulma.min.css">
-  <link rel="stylesheet" href="static/css/bulma-carousel.min.css">
-  <link rel="stylesheet" href="static/css/bulma-slider.min.css">
   <link rel="stylesheet" href="static/css/fontawesome.all.min.css">
   <link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/jpswalsh/academicons@1/css/academicons.min.css">
   <link rel="stylesheet" href="static/css/index.css">
 
-  <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
   <script defer src="static/js/fontawesome.all.min.js"></script>
-  <script src="static/js/bulma-carousel.min.js"></script>
-  <script src="static/js/bulma-slider.min.js"></script>
-  <script src="static/js/index.js"></script>
+  <script>
+  function copyCode() {
+    const code = document.getElementById('bibtex-code').innerText;
+    navigator.clipboard.writeText(code);
+  }
+  </script>
 </head>
 <body>
 
-<!-- ========== TITLE & AUTHORS ========== -->
+<!-- ========== TITLE ========== -->
 <section class="hero">
-  <div class="hero-body">
-    <div class="container is-widescreen">
+  <div class="hero-body" style="padding-bottom: 1.5rem;">
+    <div class="container is-max-desktop">
       <div class="columns is-centered">
         <div class="column has-text-centered">
-          <h1 class="title is-1 publication-title">
+          <h1 class="title is-2 publication-title">
             PC-TGS: Point-Cloud-Assistant Localized Statistical<br>Channel Prediction by Tangent Gaussian Splatting
           </h1>
-          <div class="is-size-5 publication-authors">
-            <span class="author-block">Ye Xue,</span>
-            <span class="author-block">Yiheng Wang,</span>
-            <span class="author-block">Xinhua Shao,</span>
-            <span class="author-block">Qi Yan,</span>
-            <span class="author-block">Shutao Zhang,</span>
-            <span class="author-block">Tsung-Hui Chang</span>
+          <div class="is-size-5 publication-authors" style="margin-bottom: 0.3rem;">
+            Ye Xue, Yiheng Wang, Xinhua Shao, Qi Yan, Shutao Zhang, Tsung-Hui Chang
           </div>
-          <div class="is-size-5 publication-authors">
-            <span class="author-block">Sun Yat-sen University &nbsp;·&nbsp; CUHK-Shenzhen &nbsp;·&nbsp; China Telecom &nbsp;·&nbsp; Huawei Technologies</span>
+          <div class="is-size-6" style="color: #555; margin-bottom: 1rem;">
+            IEEE Transactions on Wireless Communications, 2026
           </div>
-          <div class="is-size-5 publication-authors" style="margin-top: 0.5rem;">
-            <span class="author-block"><strong>IEEE Transactions on Wireless Communications, 2026</strong></span>
-          </div>
-
-          <div class="column has-text-centered">
-            <div class="publication-links">
-              <span class="link-block">
-                <a href="https://doi.org/10.1109/TWC.2026.3696997" target="_blank"
-                class="external-link button is-normal is-rounded is-dark">
-                <span class="icon"><i class="fas fa-file-pdf"></i></span>
-                <span>Paper</span></a>
-              </span>
-              <span class="link-block">
-                <a href="https://github.com/chenjiadie/PC-TGS" target="_blank"
-                class="external-link button is-normal is-rounded is-dark">
-                <span class="icon"><i class="fab fa-github"></i></span>
-                <span>Code</span></a>
-              </span>
-            </div>
+          <div class="publication-links">
+            <span class="link-block">
+              <a href="https://doi.org/10.1109/TWC.2026.3696997" target="_blank"
+              class="external-link button is-normal is-rounded is-dark">
+              <span class="icon"><i class="fas fa-file-pdf"></i></span>
+              <span>Paper</span></a>
+            </span>
+            <span class="link-block">
+              <a href="https://github.com/chenjiadie/PC-TGS" target="_blank"
+              class="external-link button is-normal is-rounded is-dark">
+              <span class="icon"><i class="fab fa-github"></i></span>
+              <span>Code</span></a>
+            </span>
           </div>
         </div>
       </div>
@@ -81,26 +70,24 @@
 </section>
 
 <!-- ========== ABSTRACT ========== -->
-<section class="section hero is-light">
+<section class="section" style="padding-top: 1.5rem; padding-bottom: 1.5rem;">
   <div class="container is-max-desktop">
     <div class="columns is-centered has-text-centered">
       <div class="column is-four-fifths">
-        <h2 class="title is-3">Abstract</h2>
+        <h2 class="title is-4">Abstract</h2>
         <div class="content has-text-justified">
-          <p style="text-indent: 2em; font-size: 1.05rem;">
+          <p style="text-indent: 2em; font-size: 1rem; margin-bottom: 0;">
             Accurate, site-specific channel information is crucial for optimizing next-generation wireless networks.
             Localized statistical channel modeling (LSCM) reconstructs the channel multipath angular power spectrum (APS)
-            from RSRP measurements, but cannot predict APS at locations without measurements — a critical gap for
-            large-scale deployment. We present <strong>PC-TGS</strong>, the first framework to
-            <strong>extrapolate</strong> APS to unmeasured outdoor grids by integrating sparse radio measurements
-            with dense LiDAR geometry. PC-TGS represents environmental scatterers as anisotropic 3D Gaussians,
+            from RSRP measurements, but cannot predict APS at locations without measurements. We present <strong>PC-TGS</strong>,
+            the first framework to <strong>extrapolate</strong> APS to unmeasured outdoor grids by integrating sparse radio
+            measurements with dense LiDAR geometry. PC-TGS represents environmental scatterers as anisotropic 3D Gaussians,
             initialized and refined through a relaxed-mean reparameterization of the raw point cloud. A tangent-plane
             projection maps each Gaussian into the local angular domain, while a depth-aware electromagnetic splatting
             process aggregates their contributions. We derive a closed-form Gaussian-weighted average (GWA) for APS
             bin integration with a provable error bound. Evaluations on a city-scale dataset (5M LiDAR points,
             6,310 RSRP samples) demonstrate that PC-TGS significantly outperforms state-of-the-art baselines
-            in both accuracy and inference speed, enabling geometry-aware channel prediction for large-scale
-            wireless digital twins.
+            in both accuracy and inference speed.
           </p>
         </div>
       </div>
@@ -108,24 +95,39 @@
   </div>
 </section>
 
-<!-- ========== FRAMEWORK OVERVIEW ========== -->
-<section class="section hero">
+<!-- ========== HOW IT WORKS ========== -->
+<section class="section is-light" style="padding-top: 1.5rem; padding-bottom: 1.5rem;">
   <div class="container is-max-desktop">
     <div class="columns is-centered has-text-centered">
       <div class="column is-four-fifths">
-        <h2 class="title is-3">PC-TGS Framework</h2>
-        <img src="static/images/flow_00.png" alt="PC-TGS Framework Overview" style="width:100%; max-width: 1100px;">
-        <div class="content has-text-justified" style="margin-top: 1.5rem;">
-          <p style="text-indent: 2em; font-size: 1.05rem;">
-            PC-TGS consists of four core modules: <strong>(1) Relaxed-Mean Reparameterization</strong> —
-            soft-selects <em>N</em> virtual scatterers from <em>R</em> raw LiDAR points via a learnable
-            assignment matrix <strong>T</strong>; <strong>(2) Attributes Construction</strong> —
-            each scatterer learns anisotropic covariance (scale+rotation), complex spherical harmonic
-            coefficients (degree 0–4) for angle-dependent scattering, and an MLP-predicted attenuation
-            &amp; phase; <strong>(3) Tangent-Plane Projection</strong> — projects 3D Gaussians onto
-            2D tangent planes at each angular bin; <strong>(4) Electromagnetic Splatting</strong> —
-            depth-sorted alpha compositing of complex multipath components, yielding the APS as the
-            squared magnitude of the aggregated field.
+        <h2 class="title is-4">How It Works</h2>
+      </div>
+    </div>
+    <div class="columns is-centered">
+      <div class="column is-four-fifths">
+        <img src="static/images/flow_00.png" alt="PC-TGS Framework" style="width:100%; margin-bottom: 1.2rem;">
+        <div class="content has-text-justified" style="font-size: 1rem;">
+          <p style="margin-bottom: 0.5rem;">
+            <strong>Relaxed-Mean Reparameterization.</strong>
+            A learnable selection matrix <strong>T</strong> softly selects <em>N</em> virtual scatterers from <em>R</em> raw
+            LiDAR points, with a bias term for denoising. This bridges noisy, dense point clouds with compact,
+            physically meaningful scatterer proxies.
+          </p>
+          <p style="margin-bottom: 0.5rem;">
+            <strong>Tangent-Plane Projection.</strong>
+            Unlike camera-based 3DGS, we project each 3D Gaussian onto the tangent plane of the unit sphere at each
+            angular bin (θ, φ), mapping environmental geometry into the antenna angular domain.
+          </p>
+          <p style="margin-bottom: 0.5rem;">
+            <strong>GWA-Based APS Integration.</strong>
+            We replace the intractable bin integral with a moment-matched Gaussian window, yielding a
+            <strong>closed-form</strong> weight formula with a provable <em>O</em>(Δθ³ + Δφ³) error bound.
+          </p>
+          <p style="margin-bottom: 0;">
+            <strong>Electromagnetic Splatting.</strong>
+            Depth-sorted alpha compositing accumulates complex multipath contributions, reinterpreting visual
+            rendering as <strong>multipath superposition</strong>. Each scatterer learns anisotropic covariance,
+            complex spherical harmonic coefficients (degree 0–4), and an MLP-predicted attenuation &amp; phase.
           </p>
         </div>
       </div>
@@ -133,27 +135,124 @@
   </div>
 </section>
 
-<!-- ========== KEY FIGURES ========== -->
-<section class="section hero is-light">
-  <div class="hero-body">
-    <div class="container is-max-desktop">
-      <h2 class="title is-3 has-text-centered">Method Overview</h2>
+<!-- ========== RESULTS ========== -->
+<section class="section" style="padding-top: 1.5rem; padding-bottom: 1.5rem;">
+  <div class="container is-max-desktop">
+    <div class="columns is-centered">
+      <div class="column is-four-fifths">
+        <h2 class="title is-4 has-text-centered">Results</h2>
+        <p class="has-text-centered" style="font-size: 0.9rem; margin-bottom: 0.8rem;">
+          City A dataset: 5M LiDAR points, 6,310 grids, 32 RSRP beams per grid
+        </p>
+        <div class="table-container" style="font-size: 0.85rem;">
+          <table class="table is-bordered is-striped is-narrow is-hoverable is-fullwidth">
+            <thead>
+              <tr>
+                <th>Method</th>
+                <th>Type</th>
+                <th>ST-1 (dB) ↓</th>
+                <th>ST-2 (dB) ↓</th>
+                <th>ST-3 (dB) ↓</th>
+                <th>Inf. Time (ms)</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr style="font-weight: bold; background-color: #e8f5e9;">
+                <td>PC-TGS (ours)</td>
+                <td>Offline</td>
+                <td><strong>5.57</strong></td>
+                <td><strong>7.45</strong></td>
+                <td><strong>7.57</strong></td>
+                <td>73.6</td>
+              </tr>
+              <tr>
+                <td>PC-TGS w/o RFT</td>
+                <td>Offline</td>
+                <td>5.43</td>
+                <td>8.23</td>
+                <td>8.62</td>
+                <td>73.5</td>
+              </tr>
+              <tr>
+                <td>MM-LSCM</td>
+                <td>Offline</td>
+                <td>5.76</td>
+                <td>9.12</td>
+                <td>9.94</td>
+                <td>379</td>
+              </tr>
+              <tr>
+                <td>SM-LSCM</td>
+                <td>Offline</td>
+                <td>5.89</td>
+                <td>10.02</td>
+                <td>11.14</td>
+                <td>99</td>
+              </tr>
+              <tr>
+                <td>RadioUNet</td>
+                <td>Offline</td>
+                <td>—</td>
+                <td>10.31</td>
+                <td>—</td>
+                <td>2.1</td>
+              </tr>
+              <tr>
+                <td>WNOMP</td>
+                <td>Online</td>
+                <td>6.12</td>
+                <td>13.35</td>
+                <td>15.07</td>
+                <td>1.5 / 8,032</td>
+              </tr>
+              <tr>
+                <td>TMSBL</td>
+                <td>Online</td>
+                <td>6.03</td>
+                <td>11.69</td>
+                <td>11.77</td>
+                <td>134 / 9,743</td>
+              </tr>
+              <tr>
+                <td>Ray Tracing</td>
+                <td>Online</td>
+                <td>—</td>
+                <td>14.37</td>
+                <td>16.77</td>
+                <td>8,100</td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+        <p class="has-text-centered" style="font-size: 0.82rem; margin-top: 0.3rem;">
+          <strong>ST-1:</strong> rotated RSRP @ measured grids &nbsp;|&nbsp;
+          <strong>ST-2:</strong> RSRP @ unmeasured grids &nbsp;|&nbsp;
+          <strong>ST-3:</strong> rotated RSRP @ unmeasured grids &nbsp;|&nbsp;
+          MAE in dB (lower is better)
+        </p>
+        <p class="has-text-centered" style="font-size: 0.82rem; margin-top: 0.1rem;">
+          At 50% measurement density, PC-TGS (9.25 dB) still outperforms RadioUNet trained at full density (10.31 dB).
+        </p>
+      </div>
     </div>
   </div>
 </section>
 
-<!-- Tangent-Plane Projection -->
-<section class="hero is-small">
-  <div class="hero-body">
-    <div class="container is-max-desktop">
-      <div class="columns is-centered">
-        <div class="column has-text-centered">
-          <h3 class="title is-4">Tangent-Plane Projection</h3>
-          <img src="static/images/projection.png" alt="Tangent-Plane Projection" style="width:100%; max-width: 500px;">
-          <p class="has-text-justified" style="margin-top: 1rem; font-size: 1.05rem;">
-            Unlike vision-based 3DGS camera projections, PC-TGS projects each 3D Gaussian scatterer onto
-            the <strong>tangent plane of the unit sphere</strong> at each angular bin (θ, φ). This maps
-            environmental scatterers into the antenna angular domain without camera parameters.
+<!-- ========== CONCLUSION ========== -->
+<section class="section is-light" style="padding-top: 1.5rem; padding-bottom: 1.5rem;">
+  <div class="container is-max-desktop">
+    <div class="columns is-centered has-text-centered">
+      <div class="column is-four-fifths">
+        <h2 class="title is-4">Conclusion</h2>
+        <div class="content has-text-justified">
+          <p style="text-indent: 2em; font-size: 1rem; margin-bottom: 0;">
+            We proposed <strong>point-cloud-assisted tangent Gaussian splatting (PC-TGS)</strong>, a physically grounded
+            framework that extrapolates the channel APS to grids where no signal measurements are available. PC-TGS fuses
+            LiDAR geometry and RSRP data in an end-to-end differentiable pipeline integrating relaxed-mean scatterer
+            parameterization, tangent-plane projection, and depth-aware electromagnetic synthesis, made possible by a
+            novel GWA-based closed-form bin integration. Experiments on a city-scale dataset show clear accuracy gains
+            over existing single- and multi-modal baselines. PC-TGS enables geometry-aware, data-efficient channel
+            prediction for large-scale wireless digital twins.
           </p>
         </div>
       </div>
@@ -161,130 +260,12 @@
   </div>
 </section>
 
-<!-- Learned Scatterers -->
-<section class="hero is-small">
-  <div class="hero-body">
-    <div class="container is-max-desktop">
-      <div class="columns is-centered">
-        <div class="column has-text-centered">
-          <h3 class="title is-4">Learned Virtual Scatterers</h3>
-          <img src="static/images/scatterer.png" alt="Learned Scatterers" style="width:100%; max-width: 400px;">
-          <p class="has-text-justified" style="margin-top: 1rem; font-size: 1.05rem;">
-            The extracted scatterers (N=2,000) show strong alignment with building facades and corners
-            in the City A point cloud. The relaxed-mean reparameterization successfully anchors each
-            Gaussian to physically meaningful environmental structures.
-          </p>
-        </div>
-      </div>
-    </div>
-  </div>
-</section>
-
-<!-- ========== PERFORMANCE ========== -->
-<section class="section hero is-light">
-  <div class="hero-body">
-    <div class="container" style="max-width: 960px;">
-      <h2 class="title is-3 has-text-centered">Performance</h2>
-      <h3 class="title is-5 has-text-centered">RSRP Prediction Results (City A, 5M LiDAR pts, 6,310 grids)</h3>
-      <div class="table-container">
-        <table class="table is-bordered is-striped is-narrow is-hoverable is-fullwidth" style="font-size: 0.92rem;">
-          <thead>
-            <tr>
-              <th>Method</th>
-              <th>Type</th>
-              <th>ST-1 (dB) ↓</th>
-              <th>ST-2 (dB) ↓</th>
-              <th>ST-3 (dB) ↓</th>
-              <th>Inf. Time (ms)</th>
-            </tr>
-          </thead>
-          <tbody>
-            <tr style="font-weight: bold; background-color: #e8f5e9;">
-              <td>PC-TGS (ours)</td>
-              <td>Offline</td>
-              <td><strong>5.57</strong></td>
-              <td><strong>7.45</strong></td>
-              <td><strong>7.57</strong></td>
-              <td>73.6</td>
-            </tr>
-            <tr>
-              <td>PC-TGS w/o RFT</td>
-              <td>Offline</td>
-              <td>5.43</td>
-              <td>8.23</td>
-              <td>8.62</td>
-              <td>73.5</td>
-            </tr>
-            <tr>
-              <td>MM-LSCM</td>
-              <td>Offline</td>
-              <td>5.76</td>
-              <td>9.12</td>
-              <td>9.94</td>
-              <td>379</td>
-            </tr>
-            <tr>
-              <td>SM-LSCM</td>
-              <td>Offline</td>
-              <td>5.89</td>
-              <td>10.02</td>
-              <td>11.14</td>
-              <td>99</td>
-            </tr>
-            <tr>
-              <td>RadioUNet</td>
-              <td>Offline</td>
-              <td>—</td>
-              <td>10.31</td>
-              <td>—</td>
-              <td>2.1</td>
-            </tr>
-            <tr>
-              <td>WNOMP</td>
-              <td>Online</td>
-              <td>6.12</td>
-              <td>13.35</td>
-              <td>15.07</td>
-              <td>1.5 / 8,032</td>
-            </tr>
-            <tr>
-              <td>TMSBL</td>
-              <td>Online</td>
-              <td>6.03</td>
-              <td>11.69</td>
-              <td>11.77</td>
-              <td>134 / 9,743</td>
-            </tr>
-            <tr>
-              <td>Ray Tracing</td>
-              <td>Online</td>
-              <td>—</td>
-              <td>14.37</td>
-              <td>16.77</td>
-              <td>8,100</td>
-            </tr>
-          </tbody>
-        </table>
-      </div>
-      <p class="has-text-centered" style="font-size: 0.85rem; margin-top: 0.5rem;">
-        <strong>ST-1:</strong> rotated RSRP @ measured grids &nbsp;|&nbsp;
-        <strong>ST-2:</strong> RSRP @ unmeasured grids &nbsp;|&nbsp;
-        <strong>ST-3:</strong> rotated RSRP @ unmeasured grids &nbsp;|&nbsp;
-        MAE in dB (lower is better)
-      </p>
-      <p class="has-text-centered" style="font-size: 0.85rem; margin-top: 0.2rem;">
-        At 50% measurement density, PC-TGS (9.25 dB) still outperforms RadioUNet trained at full density (10.31 dB).
-      </p>
-    </div>
-  </div>
-</section>
-
-<!-- ========== BIBTEX ========== -->
-<section class="section" id="BibTeX">
+<!-- ========== CITATION ========== -->
+<section class="section" id="BibTeX" style="padding-top: 1.5rem; padding-bottom: 1.5rem;">
   <div class="container is-max-desktop content" style="position: relative;">
     <button style="position: absolute; top: 30%; right: 1%;" onclick="copyCode()">Copy</button>
-    <h2 class="title">BibTeX</h2>
-    <pre><code>@article{xue2026point,
+    <h2 class="title is-4">Citation</h2>
+    <pre id="bibtex-code" style="font-size: 0.88rem;"><code>@article{xue2026point,
   title={Point-Cloud-Assistant Localized Statistical Channel Prediction
          by Tangent Gaussian Splatting},
   author={Xue, Ye and Wang, Yiheng and Shao, Xinhua and
@@ -300,13 +281,13 @@
 </section>
 
 <!-- ========== FOOTER ========== -->
-<footer class="footer">
+<footer class="footer" style="padding: 1.5rem;">
   <div class="container">
     <div class="columns is-centered">
       <div class="column is-8">
-        <div class="content">
-          <p>
-            This page was built using the <a href="https://github.com/eliahuhorwitz/Academic-project-page-template" target="_blank">Academic Project Page Template</a>.
+        <div class="content" style="text-align: center; font-size: 0.85rem;">
+          <p style="margin-bottom: 0;">
+            Built with <a href="https://github.com/eliahuhorwitz/Academic-project-page-template" target="_blank">Academic Project Page Template</a>.
             Licensed under <a rel="license" href="http://creativecommons.org/licenses/by-sa/4.0/" target="_blank">CC BY-SA 4.0</a>.
           </p>
         </div>
