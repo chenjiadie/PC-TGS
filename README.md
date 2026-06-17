@@ -74,6 +74,25 @@ python train_radsplatter_new.py \
 
 ---
 
+## Citation
+
+If you find this work helpful, please cite:
+
+```bibtex
+@article{xue2026point,
+  title={Point-Cloud-Assistant Localized Statistical Channel Prediction by Tangent Gaussian Splatting},
+  author={Xue, Ye and Wang, Yiheng and Shao, Xinhua and Yan, Qi and Zhang, Shutao and Chang, Tsung-Hui},
+  journal={IEEE Transactions on Wireless Communications},
+  volume={25},
+  pages={17816--17830},
+  year={2026},
+  publisher={IEEE},
+  doi={10.1109/TWC.2026.3696997}
+}
+```
+
+---
+
 ## License
 
 This project is licensed under the [MIT License](https://opensource.org/licenses/MIT).
