@@ -1,9 +1,5 @@
 import numpy as np
 import torch
-import pdb
-
-
-import torch
 
 def sph_to_cart(theta, phi):
     """
@@ -19,7 +15,6 @@ def sph_to_cart(theta, phi):
     x = sin_theta * torch.cos(phi)
     y = sin_theta * torch.sin(phi)
     z = torch.cos(theta)
-    
 
     return torch.stack((x, y, z), dim=-1)
 
@@ -37,32 +32,30 @@ def tangent_basis(P_BS,theta0, phi0):
     """
 
     n0 = sph_to_cart(theta0, phi0)+P_BS[None,:]  # [batch_size, 3]
-    
 
     cos_theta = torch.cos(theta0)
     sin_theta = torch.sin(theta0)
     cos_phi = torch.cos(phi0)
     sin_phi = torch.sin(phi0)
-    
 
     u1 = torch.stack([
         cos_theta * cos_phi,
         cos_theta * sin_phi,
         -sin_theta
     ], dim=-1)  # [batch_size, 3]
-    
+
     u2 = torch.stack([
         -sin_phi,
         cos_phi,
-        torch.zeros_like(theta0)  
+        torch.zeros_like(theta0)
     ], dim=-1)  # [batch_size, 3]
-    
+
     #  [batch_size, 3, 2]
     U = torch.stack([u1, u2], dim=-1)
-    
+
     norm = torch.linalg.norm(U, dim=1, keepdim=True)
     U = U / (norm + 1e-8)  # 添加小常数防止除零
-    
+
     return n0, u1, u2, U
 
 def project_gaussian(mu, Sigma, p, U):
@@ -73,7 +66,7 @@ def project_gaussian(mu, Sigma, p, U):
         Sigma: [N, 3, 3]    - N个3D高斯分布的协方差矩阵
         p:     [B, 3]       - B个切点坐标
         U:     [B, 3, 2]    - B个切空间基矩阵
-    
+
     返回:
         mu_2d:    [B, N, 2]     - 投影后的2D均值
         Sigma_2d: [B, N, 2, 2]  - 投影后的2D协方差
@@ -81,21 +74,18 @@ def project_gaussian(mu, Sigma, p, U):
     dtype = mu.dtype
     p = p.to(dtype)
     U = U.to(dtype)
-    
+
     delta = mu.unsqueeze(0) - p.unsqueeze(1)  # [B, N, 3]
 
-    
-    
     mu_2d = torch.einsum('bji,bnj->bni', U, delta)  # [B, N, 2]
-    
+
     U_transposed = U.transpose(-1, -2)  # [B, 2, 3]
 
-    
     temp = torch.matmul(
         U_transposed.unsqueeze(1),  # [B, 1, 2, 3]
         Sigma.unsqueeze(0)          # [1, N, 3, 3]
     )  # 结果: [B, N, 2, 3]
-    
+
     Sigma_2d = torch.matmul(
         temp,                        # [B, N, 2, 3]
         U.unsqueeze(1)               # [B, 1, 3, 2] -> 广播到 [B, N, 3, 2]
@@ -121,31 +111,16 @@ def dn_dphi_fun(theta0,phi0):
         -sin_theta * sin_phi,
         sin_theta * cos_phi,
         torch.zeros_like(sin_phi)
-    ], dim=-1) 
+    ], dim=-1)
 
 def Jacobian(U,dn_dthetas,dn_dphis,n0):
     temp1=torch.matmul(torch.matmul(n0.unsqueeze(-1),dn_dthetas.unsqueeze(-2)),n0.unsqueeze(-1)).squeeze()
     temp2=torch.matmul(torch.matmul(n0.unsqueeze(-1),dn_dphis.unsqueeze(-2)),n0.unsqueeze(-1)).squeeze()
-    
+
     temp=torch.stack([dn_dthetas-temp1,dn_dphis-temp2],axis=-1)
     U_transposed = U.transpose(-1, -2)
-    # pdb.set_trace()
     J=torch.matmul(U_transposed,temp)
     return J
-
-# def rec_corners(J,theta_res,phi_res):
-#     delta_theta=theta_res/2
-#     delta_phi=phi_res/2
-#     A1=torch.tensor([-delta_theta,-delta_phi],device=J.device)
-#     B1=torch.tensor([delta_theta,delta_phi],device=J.device)
-#     # pdb.set_trace()
-#     aa=torch.einsum('bii,i->bi', J, A1)
-#     bb=torch.einsum('bii,i->bi', J, B1)
-#     x1,x2=aa[:,0:1],aa[:,1:]
-#     y1,y2=bb[:,0:1],bb[:,1:]
-    
-#     return x1,x2,y1,y2
-
 
 
 if __name__ == "__main__":
@@ -159,7 +134,6 @@ if __name__ == "__main__":
     Sigmas = np.array([random_cov() for _ in range(N)])
 
     phi_res, theta_res = 91, 72
-    # phi_res, theta_res = 10, 10
     B=phi_res*theta_res
 
     thetas = (-63.5 + 90 + torch.linspace(90, -265, theta_res)) / 180 * np.pi

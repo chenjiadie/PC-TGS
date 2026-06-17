@@ -3,19 +3,16 @@
 """
 import os
 import numpy as np
-# import matplotlib.pyplot as plt
 import torch
 
 def CoarseA(A):
     index = torch.cat([torch.arange(3*i * 72 + 0, 3*i * 72 + 72) for i in range(0,91//3)])#0-30
     index= index[1::3]
-    # A = torch.tensor(A)
     A2=torch.zeros((A.shape))
     for i in index:
 
 
         a, s, d, q, w, e, z, x, c = FindNearest9Angle(i)
-        # A2[...,i]=torch.max( A[...,s],A[...,a],A[...,d],A[...,w],A[...,x],A[...,e],A[...,q],A[...,z],A[...,c])
         # 选择要比较的通道的索引
         channels_to_compare = [s, a, d, w, x, e, q, z, c]
 
@@ -24,7 +21,6 @@ def CoarseA(A):
 
         # 将最大值填充回 A 的对应位置
         A2[..., i] = max_values
-        # A2[...,i]=(2*A[...,s]+1.5*(A[...,a]+A[...,d]+A[...,w]+A[...,x])+(A[...,e]+A[...,q]+A[...,z]+A[...,c]))/12
     return A2
 
 def FindNearest9Angle(i):
@@ -68,7 +64,6 @@ def test_x_predict(xx,save_train_mae,save_test_mae):
     i=-1
     for ii in range(len(x_max)):
         i+=1
-        # for i in range(len(save_train_mae)):
         if save_train_mae.numpy().mean(-1)[i]==0.0:
             i = find_no_zero(save_train_mae.numpy().mean(-1),i)
         else:

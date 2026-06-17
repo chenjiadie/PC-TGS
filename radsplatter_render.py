@@ -2,10 +2,8 @@ import pdb
 import torch
 import torch.nn as nn
 import math
-# from einops import reduce
 from complex_sh_utils_new import eval_sh
 from projection_utils import *
-# from mvnorm_2d_normal_cdf_utils import cdf_value
 from pdf_utils import *
 import torch.autograd.profiler as profiler
 from prune_utils import filter_by_mahalanobis
@@ -163,13 +161,10 @@ class GaussRenderer(nn.Module):
 
     def __init__(self, bs_location,white_bkgd=True, **kwargs):
         super(GaussRenderer, self).__init__()
-      
-        # self.mode
-        # self.active_sh_degree = model.active_sh_degree
+
         self.debug = False
         self.white_bkgd = white_bkgd
         self.bs=bs_location
-        # pdb.set_trace()
         self.device= bs_location.device
         print('-----------------------------------------------------------------')
         print('RadSplatter Render Intialization on:', self.device)
@@ -178,196 +173,102 @@ class GaussRenderer(nn.Module):
         print('=================================================================')
         print('BS Position :',  self.bs)
         print('=================================================================')
-   
-        
 
-    # def build_S(self, means3D, shs_real,shs_imag, degree, Grid_posiotion):
-    #     rays_o2 = Grid_posiotion
-    #     rays_d2 =  rays_o2[:,None,:]-means3D[None,:,:] 
-    #     rays_d_normarlized2=rays_d2/rays_d2.norm(dim=2,keepdim=True)
-    #     # rays_d_normarlized=rays_d/rays_d.norm(dim=1,keepdim=True)
-    #     # pdb.set_trace()
-    #     Complex_S = eval_sh(degree, shs_real.permute(0,2,1),shs_imag.permute(0,2,1), rays_d_normarlized2)
-    #     return Complex_S
 
     def build_S(self, means3D, shs_real,shs_imag, degree, BS_position,Grid_posiotion):
         rays_o1 = BS_position
         rays_d1 = means3D[None,:,:] - rays_o1[None,None,:]
         rays_d_normarlized1=rays_d1/rays_d1.norm(dim=2,keepdim=True)
         rays_o2 = Grid_posiotion
-        rays_d2 =  rays_o2[:,None,:]-means3D[None,:,:] 
+        rays_d2 =  rays_o2[:,None,:]-means3D[None,:,:]
         rays_d_normarlized2=rays_d2/rays_d2.norm(dim=2,keepdim=True)
         Complex_S = eval_sh(degree, shs_real.permute(0,2,1),shs_imag.permute(0,2,1), rays_d_normarlized1,rays_d_normarlized2)
         return Complex_S
-    
-    
-    
+
+
+
     def render(self,index,L,weight,Complex_S,Alpha):
-      
-        # temp1=Alpha[None,None,:,:]*weight[None,:,:,None]*L[:,None,:,:]
-        
+
         num_grid=index.shape[0]
         num_scatterer=index.shape[1]
-        # pdb.set_trace()
         num_angles=weight.shape[0]
 
-        
-        # index_L= index.expand(-1, 3)
+
         sorted_L=torch.gather(L, 1, index)
 
         index_2=index.expand(num_grid,num_scatterer,num_angles)
-        # pdb.set_trace()
 
-        # if Complex_S.shape[0]!=num_grid:
-            
-        #     Complex_S_=Complex_S.unsqueeze(0).expand(num_grid,-1,-1).cuda()
-        # else:
-        #     print('SH Degree>=1')
-        #     # Complex_S_=Complex_S
-        # pdb.set_trace()
         sorted_Complex_S=torch.gather(Complex_S.expand(num_grid,num_scatterer,num_angles), 1, index_2)
-        # sorted_Complex_S=torch.gather(Complex_S.expand(num_grid,num_scatterer,1), 1, index)
 
         sorted_Alpha=torch.gather(Alpha.unsqueeze(0).expand(num_grid,num_scatterer,1),1,index)
 
         sorted_weight=torch.gather(weight.unsqueeze(0).expand(num_grid,num_angles,num_scatterer).permute(0,2,1),1, index_2)
 
-        # mask=(sorted_weight!=0).float()
-        # pdb.set_trace()
-        # sorted_weight1=sorted_weight*mask/
-        # mask = torch.sigmoid(20 * (sorted_weight - 1e-10))
-        # soft_w=sorted_weight*mask
-
-        # alpha=sorted_Alpha*sorted_weight*sorted_L
-
-        # alpha=sorted_Alpha*soft_w
-
-        # temp1=alpha*sorted_L
-
         temp1=sorted_Alpha*sorted_weight*sorted_L
-        
+
         T=torch.cat([torch.ones_like(temp1[:,:1,:]),(1-temp1[:,:-1,:])],dim=1).cumprod(dim=1)
-        # pdb.set_trace()
 
         alpha=sorted_Alpha*sorted_weight
-     
+
         render_S=(T * alpha * sorted_Complex_S).sum(dim=1)
-        
 
-        
+
+
         render_aps=torch.abs(render_S)**2
-        # render_aps = torch.exp(render_aps) 
-
-        # render_aps_clamped = torch.clamp(render_aps, min=1e-10, max=1.0)
 
         if torch.any(torch.isnan(render_aps)):
             pdb.set_trace()
         return   render_aps
 
-    # def forward(self, position_grid, model, **kwargs):
     def forward(self, model,position_grids,angle_indice,eval=False, **kwargs):
         batchsize, _ = position_grids.shape
-        # opacity,phi_o = model.get_opacity
         linear1 = model.get_opacity
         scales = model.get_scaling
         rotations = model.get_rotation
         shs_real,shs_imag = model.get_features
         gamma1,gamma2=model.get_gamma
-        # M=shs_real.shape[0]
         n0,U,areaA,S_shift=model.get_project
-        # def expan(x,M):
-        #     x_old=x
-        #     x_new=x.unsqueeze(1).expand(x_old.shape[0],M,x_old.shape[1])
-        #     return x_new
-        
-        
-        # bias = model.get_bias
+
         if eval:
             T,TT_middle=model.get_selection_matrix_eval
             means3d_middle,means3D,bias= model.get_xyz_eval
         else:
             T,TT_middle=model.get_selection_matrix
             means3d_middle,means3D,bias= model.get_xyz
-        
+
         if USE_PROFILE:
             prof = profiler.record_function
         else:
             prof = contextlib.nullcontext
 
         direction_BS=self.bs[None,:]-means3D
-        
+
         depths_to_BS=torch.norm(direction_BS, dim=1, keepdim=True)
-        # depths_to_BS=torch.norm(direction, dim=1)
-        # sorted_depths_to_BS, index = torch.sort(depths_to_BS,dim=0)
         depths_to_BS_EB=self.embed_depth_bs_fn(depths_to_BS)
         out1=linear1(depths_to_BS_EB)
-        # pdb.set_trace()
         opacity=out1[:,0:1]
         phi_o=out1[:,1:]
-        # pdb.set_trace()
-
-        ##old best
-        # out1=linear1(sorted_depths_to_BS_EB)
-        # sorted_opacity=out1[:,0:1]
-        # sorted_phi_o=out1[:,1:]
-
-
-        # index_mean= index.expand(-1, 3)
-        # sorted_means3D=torch.gather(means3D, 0, index_mean)
 
         depths_to_grid=torch.norm(position_grids[:,None,:]-means3D[None,:,:],dim=2, keepdim=True)
         _, index = torch.sort(depths_to_grid,dim=1)
-        # depths_to_grid_EB=self.embed_depth_bs_fn(depths_to_grid)
-        # pdb.set_trace()
-        # out1=linear1(depths_to_grid_EB)
-        # sorted_opacity=out1[:,:,0:1]
-        # sorted_phi_o=out1[:,:,1:]
 
 
-   
-        # index_shs=index.unsqueeze(-1).expand(-1, 25,1)
-        # sorted_shs_real=torch.gather(shs_real,0,index_shs)
-        # sorted_shs_imag=torch.gather(shs_imag,0,index_shs)
-        # index_scales=index.expand(-1, 3)
-        # index_rotations=index.expand(-1, 4)
-        # sorted_scales=torch.gather(scales,0,index_scales)
-        # sorted_rotations=torch.gather(rotations,0,index_rotations)
-
-
-        # direction_grid=position_grids[:,None,:]-sorted_means3D[None,:,:]
-        # sorted_depths_to_grid=torch.norm(direction_grid,dim=2, keepdim=True)
-
-
-        # pdb.set_trace()
-        
-       
         with prof("build color"):
             Complex_S = self.build_S(means3D=means3D, shs_real=shs_real, shs_imag=shs_imag, degree=model.active_sh_degree,  BS_position=self.bs,Grid_posiotion=position_grids)
-            # Complex_S = self.build_S(means3D=means3D, shs_real=shs_real, shs_imag=shs_imag, degree=model.active_sh_degree,  Grid_posiotion=position_grids)
 
-        # opacity=opacity_*torch.exp(1j * phi_o)
 
-        
         with prof("build cov3d"):
             cov3D = build_covariance_3d(scales, rotations) #the number of cloud point*3*3
-            # pdb.set_trace()
-           
+
             means2D, cov2D = project_gaussian(means3D, cov3D, n0.to(self.device), U.to(self.device))
-            # pdb.set_trace()
-            # mu2D, cov2D=filter_by_mahalanobis(sorted_means2D, sorted_cov2D)
 
         with prof("build explcitly geometric path loss"):
-            # L=1/(((600*sorted_depths_to_BS[None,:,:])**gamma1)*((600*sorted_depths_to_grid)**gamma2)+1e-10)
             L=1/(((depths_to_BS[None,:,:])**gamma1[None,:,:])*((depths_to_grid)**gamma2[None,:,:])+1e-10)
-            # L=1/(((depths_to_BS[None,:,:])**2)*((depths_to_grid)**2)+1e-10)
 
-        
-        
-        # pdb.set_trace()
+
         recv_signal = torch.zeros(batchsize,  6552).cuda()
         chunks = 800  # 100
         chunks_num = angle_indice.shape[0] // chunks
-        # for i in tqdm(range(chunks_num)):
         for i in range(chunks_num):
             means2d=means2D[i*chunks:(i+1)*chunks]
             cov2d=cov2D[i*chunks:(i+1)*chunks]
@@ -375,41 +276,22 @@ class GaussRenderer(nn.Module):
             areaa=areaA[i*chunks:(i+1)*chunks].to(self.device)
             weight=(areaa[:,None]*multivariate_normal_pdf_origin(means2d,cov2d+s_shift[:,None,:]))
 
-            # weight=(areaa[:,None]*multivariate_normal_pdf_stable(means2d,cov2d+s_shift[:,None,:]))
-            # for i in range(means2d.shape[0]):
-            #     for j in
-            
-            
-            # pdb.set_trace()
-            # sorted_weight=(areaa[:,None]*multivariate_normal_pdf_origin(sorted_means2d,sorted_cov2d))
-            # sorted_weight=(areaa[:,None]*multivariate_normal_pdf_stable(sorted_means2d,sorted_cov2d+s_shift[:,None,:]))
-            
-            # sorted_weight=(areaa[:,None]*multivariate_normal_pdf_robust(sorted_means2d,sorted_cov2d+s_shift[:,None,:]))
-            # weight1=filter_by_mahalanobis(means2d, cov2d,weight)
-            # pdb.set_trace()
 
             if torch.any(torch.isnan(means2d)) or torch.any(torch.isnan(cov2d)):
                 pdb.set_trace()
-            # if torch.min(weight1)<0:
-                # print(torch.min(weight1))
-                # pdb.set_trace()
             if torch.any(torch.isnan(weight)):
                 pdb.set_trace()
-            
-            # pdb.set_trace()
 
-        
+
+
             with prof("render"):
                 recv_signal_chunks = self.render(
                 index=index,
-                L=L, 
-                # weight=weight,
+                L=L,
                 weight=weight,
                 Complex_S=Complex_S,
                 Alpha=opacity*torch.exp(1j*phi_o)
                 )
             recv_signal[..., angle_indice[i * chunks:(i + 1) * chunks]]=recv_signal_chunks
-        # pdb.set_trace()
-      
+
         return recv_signal,means3D,means3d_middle,bias,T,TT_middle
-        # return recv_signal,means3D,means3d_middle,bias,T,TT_middle,shs_real,shs_imag ,scales,rotations ,gamma1,gamma2,opacity,phi_o

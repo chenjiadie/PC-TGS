@@ -13,43 +13,6 @@ def SH2RGB(sh):
 # https://ieeexplore.ieee.org/stamp/stamp.jsp?tp=&arnumber=5594365
 # https://ieeexplore.ieee.org/stamp/stamp.jsp?tp=&arnumber=1284991
 
-# C0=torch.tensor(np.sqrt(1/np.pi)/2)
-# C1=torch.tensor(np.array([
-#     np.sqrt(3/(2*np.pi))/2,
-#     np.sqrt(3/(np.pi))/2,
-#     -np.sqrt(3/(2*np.pi))/2
-# ]))
-
-# C2=torch.tensor(np.array([
-#     np.sqrt(15/(2*np.pi))/4,
-#     np.sqrt(15/(2*np.pi))/2,
-#     np.sqrt(5/(np.pi))/4,
-#     -np.sqrt(15/(2*np.pi))/2,
-#     np.sqrt(15/(2*np.pi))/4,
-# ]))
-
-# C3=torch.tensor(np.array([
-#     np.sqrt(35/(np.pi))/8,
-#     np.sqrt(105/(2*np.pi))/4,
-#     np.sqrt(21/(np.pi))/8,
-#     np.sqrt(7/(np.pi))/4,
-#     -np.sqrt(21/(np.pi))/8,
-#     np.sqrt(105/(2*np.pi))/4,
-#     -np.sqrt(35/(np.pi))/8,
-# ]))
-
-# C4=torch.tensor(np.array([
-#     3*np.sqrt(35/(2*np.pi))/16,
-#     3*np.sqrt(35/(np.pi))/8,
-#     3*np.sqrt(5/(2*np.pi))/8,
-#     3*np.sqrt(5/(np.pi))/8,
-#     3*np.sqrt(1/(np.pi))/16,
-#     -3*np.sqrt(5/(np.pi))/8,
-#     3*np.sqrt(5/(2*np.pi))/8,
-#     -3*np.sqrt(35/(np.pi))/8,
-#     3*np.sqrt(35/(2*np.pi))/16,
-# ]))
-
 C0 = 0.28209479177387814
 
 C1 = [
@@ -85,7 +48,7 @@ C4 = [
     -1.2516714708983523,
     0.4425326924449826
 ]
-   
+
 
 
 def eval_sh(deg, sh_real,sh_imag, dirs1,dirs2):
@@ -113,12 +76,11 @@ def eval_sh(deg, sh_real,sh_imag, dirs1,dirs2):
     if deg > 0:
         x1, y1, z1 = dirs1[..., 0:1], dirs1[..., 1:2], dirs1[..., 2:3]
         x2, y2, z2 = dirs2[..., 0:1], dirs2[..., 1:2], dirs2[..., 2:3]
-        # pdb.set_trace()
         result=(result+
                 C1[0]*C1[0]*sh[..., 1]*(x1-1j*y1)*(x2-1j*y2)+
                 C1[1]*C1[1]*sh[..., 2]*(z1+1j*0)*(z2+1j*0)+
                 C1[2]*C1[2]*sh[..., 3]*(x1+1j*y1)*(x2+1j*y2))
-        
+
         if deg > 1:
             result=(result+
                 C2[0]*C2[0]*sh[..., 4]*(x1-1j*y1)*(x1-1j*y1)*(x2-1j*y2)*(x2-1j*y2)+
@@ -127,7 +89,7 @@ def eval_sh(deg, sh_real,sh_imag, dirs1,dirs2):
                 C2[3]*C2[3]*sh[..., 7]*(x1+1j*y1)*z1*(x2+1j*y2)*z2+
                 C2[4]*C2[4]*sh[..., 8]*(x1+1j*y1)*(x1+1j*y1)*(x2+1j*y2)*(x2+1j*y2)
                 )
-            
+
             if deg > 2:
                 result=(result+
                 C3[0]*C3[0]*sh[..., 9]*(x1-1j*y1)*(x1-1j*y1)*(x1-1j*y1)*(x2-1j*y2)*(x2-1j*y2)*(x2-1j*y2)+
@@ -159,7 +121,7 @@ def eval_sh(deg, sh_real,sh_imag, dirs1,dirs2):
 
 if __name__ == "__main__":
     deg = 4
-    N = 100 
+    N = 100
     device='cuda:0'
 
     sh_real = torch.randn((N,1,(deg+1)**2), requires_grad=True,device=device)
@@ -186,4 +148,3 @@ if __name__ == "__main__":
     print("sh_real.grad mean:", sh_real.grad.abs().mean().item())
     print("sh_imag.grad shape:", sh_imag.grad.shape)
     print("sh_imag.grad mean:", sh_imag.grad.abs().mean().item())
-    # pdb.set_trace()
